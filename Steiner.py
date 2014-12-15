@@ -1,15 +1,16 @@
 #!/usr/local/bin/python
+"""Steiner.py
+Author: Clint Cooper
+Date: 12/15/14
+The code that follows is not good, is not well organized, is not my best work
+but it does work. It solves the Minimum Steiner Problem in relatively small time
+with Rectilinear in O(n^3 * logn) and Graphical in O(n^4 * logn)
 
-# Author: Clint Cooper
-# Date: 12/15/14
-# The code that follows is not good, is not well organized, is not my best work
-# but it does work. It solves the Minimum Steiner Problem in relatively small time
-# with Rectilinear in O(n^3 * logn) and Graphical in O(n^4 * logn)
+Note to self: Add comments and organization to the functions.
+Note to reader: Sorry for the lack of comments and organizaiton. See above. 
+"""
 
-# Note to self: Add comments and organization to the functions.
-# Note to reader: Sorry for the lack of comments and organizaiton. See above. 
-
-from Tkinter import *
+from Tkinter import Canvas, Tk, Frame, Button, RAISED, TOP, StringVar, Label, RIGHT, RIDGE
 import random
 import math
 import sys
@@ -34,18 +35,19 @@ global GSMT
 GSMT = []
 
 class Point:
+	"""Point Class for Steiner.py
+	Contains position in x and y values with degree of edges representative of the length of
+	the list of edges relative to the MST
+	"""
 	def __init__(self, x, y):
 		self.x = x
 		self.y = y
-		self.d = 0
 		self.deg = 0
 		self.edges = []
 		self.MSTedges = []
 	def update(self, edge):
-		self.d += 1
 		self.edges.append(edge)
 	def reset(self):
-		self.d = 0
 		self.edges = []
 		self.deg = 0
 		self.MSTedges = []
@@ -54,6 +56,10 @@ class Point:
 		self.MSTedges.append(edge)
 
 class Line:
+	"""Line Class for Steiner.py
+	Contains the two end points as well as the weight of the line. 
+	Supports determining the first or last pont as well as the other given one. 
+	"""
 	def __init__(self, p1, p2, w):
 		self.points = []
 		self.points.append(ref(p1))
@@ -72,6 +78,9 @@ class Line:
 		return self.points[1]
 
 class ref:
+	"""ref Class for use in Steiner.py
+	Satisfies the need for pointers to maintain a constant and updated global list of things. 
+	"""
 	def __init__(self, obj): 
 		self.obj = obj
 	def get(self):	
@@ -79,9 +88,10 @@ class ref:
 	def set(self, obj):	  
 		self.obj = obj
 
-
-
 def addMousePoint(event):
+	"""addMousePoint 
+	Calls addPoint if point is not on canvas edge and not ontop of another point. 
+	"""
 	addpt = True
 	if OriginalPoints == []:
 		if (event.x < 10) and (event.x >= 500) and (event.y < 10) and (event.y >= 500):
@@ -97,6 +107,9 @@ def addMousePoint(event):
 			addPoint(event.x, event.y)
 
 def addPoint(x, y):
+	"""addPoint 
+	Adds a point at the specified x and y on the Tkinter canvas.
+	"""
 	global RMST
 	del RMST[:]
 	global RSMT
@@ -111,7 +124,8 @@ def addPoint(x, y):
 	OriginalPoints.append(point)
 
 def Kruskal(SetOfPoints, type):
-	"""Kruskal's algorithm: sort edges by weight, and add them one at a time while avoiding cycles
+	"""Kruskal's Algorithm
+	Sorts edges by weight, and adds them one at a time to the tree while avoiding cycles
 	Takes any set of Point instances and converts to a dictonary via edge crawling 
 	Takes the dictonary and iterates through each level to discover neighbors and weights
 	Takes list of point index pairs and converts to list of Lines then returns
@@ -165,6 +179,9 @@ def Kruskal(SetOfPoints, type):
 	return MST  
 
 def DeltaMST(SetOfPoints, TestPoint, type):
+	"""DeltaMST	
+	Determines the difference in a MST's total weight after adding a point. 
+	"""
 
 	if type == "R":
 		MST = Kruskal(SetOfPoints, "R")
@@ -188,6 +205,9 @@ def DeltaMST(SetOfPoints, TestPoint, type):
 	return cost1 - cost2
 
 def HananPoints(SetOfPoints):
+	"""HananPoints
+	Produces a set of HananPoints of type Points
+	"""
 	totalSet = SetOfPoints
 	SomePoints = []
 	for i in xrange(0,len(totalSet)):
@@ -198,6 +218,10 @@ def HananPoints(SetOfPoints):
 	return SomePoints 
 
 def BrutePoints(SetOfPoints):
+	"""BrutePoints
+	Produces points with spacing 10 between x values and y values between maximal and minimal existing points.
+	This could use some work...
+	"""
 	if SetOfPoints != []:
 		SomePoints = []
 		xmax = (max(SetOfPoints,key=lambda x: x.x)).x
@@ -215,6 +239,10 @@ def BrutePoints(SetOfPoints):
 		return []
 
 def computeRMST():
+	"""computeRMST
+	Computes the Rectilinear Minimum Spanning Tree
+	Uses Kruskals to determine the MST of some set of global points and prints to canvas
+	"""
 	canvas.delete("all")
 	global RMST
 	if RMST == []:
@@ -242,6 +270,13 @@ def computeRMST():
 	RMSTtext.set(str(RMSTminDist))
 
 def computeRSMT():
+	"""computeRSMT
+	Computes the Rectilinear Steiner Minimum Spanning Tree
+	Uses HananPoints as a candidate set of points for possible steiner points.
+	DeltaMST is used to determine which points are beneficial to the final tree.
+	Any point with less than two degree value (two or fewer edges) is not helpful and is removed.
+	All final points are printed to the canvas.
+	"""
 	canvas.delete("all")
 	global RSMT
 	if RSMT == []:
@@ -294,6 +329,10 @@ def computeRSMT():
 	RSMTtext.set(str(RSMTminDist))
 
 def computeGMST():
+	"""computeGMST
+	Computes the Euclidean (Graphical) Minimum Spanning Tree
+	Uses Kruskals to determine the MST of some set of global points and prints to canvas
+	"""
 	canvas.delete("all")
 	global GMST
 	if GMST == []:
@@ -313,6 +352,13 @@ def computeGMST():
 	GMSTtext.set(str(round(GMSTminDist, 2)))
 
 def computeGSMT(): 
+	"""computeGSMT
+	Computes the Euclidean Graphical Steiner Minimum Spanning Tree
+	Uses BrutePoints as a candidate set of points for possible steiner points. (Approximation factor of <= 2)
+	DeltaMST is used to determine which points are beneficial to the final tree.
+	Any point with less than two degree value (two or fewer edges) is not helpful and is removed.
+	All final points are printed to the canvas.
+	"""
 	canvas.delete("all")
 	global GSMT
 	if GSMT == []:
@@ -357,6 +403,9 @@ def computeGSMT():
 	GSMTtext.set(str(round(GSMTminDist, 2)))
 
 def clear():
+	"""clear
+	Cleans the global lists and canvas points and text.
+	"""
 	global OriginalPoints
 	del OriginalPoints[:]
 	global RectSteinerPoints
