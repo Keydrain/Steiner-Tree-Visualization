@@ -1,16 +1,19 @@
 #!/usr/local/bin/python
 
 # Author: Clint Cooper
-# Date: 12/05/14
+# Date: 12/15/14
 # The code that follows is not good, is not well organized, is not my best work
 # but it does work. It solves the Minimum Steiner Problem in relatively small time
 # with Rectilinear in O(n^3 * logn) and Graphical in O(n^4 * logn)
-# If you are reading this or using this, please enjoy!
+
+# Note to self: Add comments and organization to the functions.
+# Note to reader: Sorry for the lack of comments and organizaiton. See above. 
 
 from Tkinter import *
 import random
 import math
 import sys
+from UnionFind import UnionFind
 
 tk = Tk()
 tk.wm_title("Steiner Trees")
@@ -76,61 +79,7 @@ class ref:
 	def set(self, obj):	  
 		self.obj = obj
 
-class UnionFind: # I didn't write this. It was imported from somewhere on the internet. Sorry...
-	"""Union-find data structure.
 
-	Each unionFind instance X maintains a family of disjoint sets of
-	hashable objects, supporting the following two methods:
-
-	- X[item] returns a name for the set containing the given item.
-	  Each set is named by an arbitrarily-chosen one of its members; as
-	  long as the set remains unchanged it will keep the same name. If
-	  the item is not yet part of a set in X, a new singleton set is
-	  created for it.
-
-	- X.union(item1, item2, ...) merges the sets containing each item
-	  into a single larger set.  If any item is not yet part of a set
-	  in X, it is added to X as one of the members of the merged set.
-	"""
-
-	def __init__(self):
-		"""Create a new empty union-find structure."""
-		self.weights = {}
-		self.parents = {}
-
-	def __getitem__(self, object):
-		"""Find and return the name of the set containing the object."""
-
-		# check for previously unknown object
-		if object not in self.parents:
-			self.parents[object] = object
-			self.weights[object] = 1
-			return object
-
-		# find path of objects leading to the root
-		path = [object]
-		root = self.parents[object]
-		while root != path[-1]:
-			path.append(root)
-			root = self.parents[root]
-
-		# compress the path and return
-		for ancestor in path:
-			self.parents[ancestor] = root
-		return root
-		
-	def __iter__(self):
-		"""Iterate through all items ever found or unioned by this structure."""
-		return iter(self.parents)
-
-	def union(self, *objects):
-		"""Find the sets containing the objects and merge them all."""
-		roots = [self[x] for x in objects]
-		heaviest = max([(self.weights[r],r) for r in roots])[1]
-		for r in roots:
-			if r != heaviest:
-				self.weights[heaviest] += self.weights[r]
-				self.parents[r] = heaviest
 
 def addMousePoint(event):
 	addpt = True
@@ -161,7 +110,7 @@ def addPoint(x, y):
 	global OriginalPoints
 	OriginalPoints.append(point)
 
-def Kruskal(SetOfPoints, type): # I actually did write this :D
+def Kruskal(SetOfPoints, type):
 	"""Kruskal's algorithm: sort edges by weight, and add them one at a time while avoiding cycles
 	Takes any set of Point instances and converts to a dictonary via edge crawling 
 	Takes the dictonary and iterates through each level to discover neighbors and weights
@@ -478,7 +427,7 @@ RSMTtext.set("-----")
 GMSTtext.set("-----")
 GSMTtext.set("-----")
 
-# Testing
+# Testing Points
 
 # addPoint(161, 88)
 # addPoint(103, 222)
