@@ -2,12 +2,12 @@
 """Steiner.py
 Author: Clint Cooper
 Date: 12/15/14
-The code that follows is not good, is not well organized, is not my best work
-but it does work. It solves the Minimum Steiner Problem in relatively small time
-with Rectilinear in O(n^3 * logn) and Graphical in O(n^4 * logn)
+The code that follows is not optimal nor is it well organized but it does work. 
+It solves the Minimum Steiner Problem in relatively small time with Rectilinear 
+Space in O(n^3 * logn) and Graphical Space in O(n^4 * logn)
 
 Note to self: Add comments and organization to the functions.
-Note to reader: Sorry for the lack of comments and organizaiton. See above. 
+Note to reader: Sorry for the lack of comments and organization. See above. 
 """
 
 from Tkinter import Canvas, Tk, Frame, Button, RAISED, TOP, StringVar, Label, RIGHT, RIDGE
@@ -58,7 +58,7 @@ class Point:
 class Line:
 	"""Line Class for Steiner.py
 	Contains the two end points as well as the weight of the line. 
-	Supports determining the first or last pont as well as the other given one. 
+	Supports determining the first or last point as well as the other given one. 
 	"""
 	def __init__(self, p1, p2, w):
 		self.points = []
@@ -90,7 +90,7 @@ class ref:
 
 def addMousePoint(event):
 	"""addMousePoint 
-	Calls addPoint if point is not on canvas edge and not ontop of another point. 
+	Calls addPoint if point is not on canvas edge and not on top of another point. 
 	"""
 	addpt = True
 	if OriginalPoints == []:
@@ -126,8 +126,8 @@ def addPoint(x, y):
 def Kruskal(SetOfPoints, type):
 	"""Kruskal's Algorithm
 	Sorts edges by weight, and adds them one at a time to the tree while avoiding cycles
-	Takes any set of Point instances and converts to a dictonary via edge crawling 
-	Takes the dictonary and iterates through each level to discover neighbors and weights
+	Takes any set of Point instances and converts to a dictionary via edge crawling 
+	Takes the dictionary and iterates through each level to discover neighbors and weights
 	Takes list of point index pairs and converts to list of Lines then returns
 	"""
 
@@ -219,7 +219,8 @@ def HananPoints(SetOfPoints):
 
 def BrutePoints(SetOfPoints):
 	"""BrutePoints
-	Produces points with spacing 10 between x values and y values between maximal and minimal existing points.
+	Produces points with spacing 10 between x values and y values between maximal and minimal 
+	existing points.
 	This could use some work...
 	"""
 	if SetOfPoints != []:
@@ -486,3 +487,4 @@ GSMTtext.set("-----")
 # End of testing
 
 tk.mainloop()
+
